@@ -2,9 +2,9 @@
 
 ## 📌 Project Overview
 
-The Movie Recommendation System is a graph-based web application developed using Python, Flask, and CognoDB. It stores movies, users, genres, actors, and directors as graph nodes and recommends movies based on user interests using graph traversal.
+The Movie Recommendation System is a graph-based web application developed using **Python**, **Flask**, and **CognoDB**. The application stores movies, users, genres, actors, and directors as graph nodes and uses graph traversal to recommend movies based on user interests.
 
-This project demonstrates how graph databases can efficiently model relationships and generate personalized recommendations.
+Unlike traditional SQL databases, CognoDB efficiently manages highly connected data using nodes and relationships, making it ideal for recommendation systems.
 
 ---
 
@@ -13,12 +13,13 @@ This project demonstrates how graph databases can efficiently model relationship
 - View All Movies
 - Search Movies
 - View Movie Details
-- Movie Recommendation
-- Add Movie
+- Add New Movie
 - Edit Movie
 - Delete Movie
+- Personalized Movie Recommendations
 - Graph Database Traversal
-- Responsive Bootstrap UI
+- Responsive Bootstrap User Interface
+- REST API Support
 
 ---
 
@@ -43,20 +44,32 @@ This project demonstrates how graph databases can efficiently model relationship
 
 ---
 
-# Folder Structure
+# Project Structure
 
 ```
-MovieRecommendationSystem
+MovieRecommendationSystem/
 │
-├── queries
-├── routes
-├── services
-├── static
-│   ├── css
-│   ├── images
-│   └── js
-├── templates
-├── tests
+├── queries/
+│   ├── movie_queries.py
+│   └── recommendation_queries.py
+│
+├── routes/
+│   ├── movie_routes.py
+│   └── recommendation_routes.py
+│
+├── services/
+│   ├── movie_service.py
+│   └── recommendation_service.py
+│
+├── templates/
+│
+├── static/
+│   ├── css/
+│   ├── js/
+│   └── images/
+│
+├── tests/
+│
 ├── app.py
 ├── config.py
 ├── database.py
@@ -64,143 +77,257 @@ MovieRecommendationSystem
 ├── requirements.txt
 ├── README.md
 ├── GRAPH_MODEL.md
-└── .env
+├── PROJECT_REPORT.md
+└── .gitignore
 ```
 
 ---
 
-# Database Nodes
+# Why a Graph Database?
 
-- Movie
+Traditional relational databases store data in tables and retrieve related information using JOIN operations.
+
+This project contains highly connected entities such as:
+
+- Users
+- Movies
+- Genres
+- Actors
+- Directors
+
+Graph databases like CognoDB store these relationships directly, making recommendation queries much faster and easier than multiple SQL JOIN operations.
+
+Example relationships:
+
+```
+User ------LIKES------> Movie
+
+Movie -----BELONGS_TO-----> Genre
+
+Movie -----DIRECTED_BY-----> Director
+
+Movie -----ACTED_BY-----> Actor
+```
+
+The recommendation engine traverses these relationships to suggest movies based on the genres of movies liked by a user.
+
+---
+
+# Graph Data Model
+
+```
+                +-----------+
+                |   User    |
+                +-----------+
+                     |
+                   LIKES
+                     |
+                     ▼
+                +-----------+
+                |   Movie   |
+                +-----------+
+                 /    |    \
+                /     |     \
+               ▼      ▼      ▼
+           Genre   Actor  Director
+```
+
+## Nodes
+
 - User
+- Movie
 - Genre
 - Actor
 - Director
 
----
+## Relationships
 
-# Relationships
-
-- BELONGS_TO
-- DIRECTED_BY
-- ACTED_BY
 - LIKES
+- BELONGS_TO
+- ACTED_BY
+- DIRECTED_BY
 
 ---
 
-# APIs
+# Main Cypher Queries
 
-## Movies
+## Get All Movies
 
-GET
-
-```
-/movies
+```cypher
+MATCH (m:Movie)
+RETURN m;
 ```
 
 ---
 
-## Movie By ID
+## Get Movie By ID
 
-GET
-
-```
-/movies/<id>
+```cypher
+MATCH (m:Movie {id:$id})
+RETURN m;
 ```
 
 ---
 
 ## Search Movie
 
-GET
-
-```
-/search?title=Movie
+```cypher
+MATCH (m:Movie)
+WHERE toLower(m.title) CONTAINS toLower($title)
+RETURN m;
 ```
 
 ---
 
-## Recommendations
+## Recommendation Query
 
-GET
+```cypher
+MATCH (u:User {name:$user})-[:LIKES]->(:Movie)-[:BELONGS_TO]->(g:Genre)
+
+MATCH (m:Movie)-[:BELONGS_TO]->(g)
+
+WHERE NOT (u)-[:LIKES]->(m)
+
+RETURN DISTINCT
+m.title,
+m.rating
+ORDER BY m.rating DESC;
+```
+
+---
+
+## Movies By Director
+
+```cypher
+MATCH (m:Movie)-[:DIRECTED_BY]->(d:Director)
+RETURN m,d;
+```
+
+---
+
+## Movies By Actor
+
+```cypher
+MATCH (m:Movie)-[:ACTED_BY]->(a:Actor)
+RETURN m,a;
+```
+
+---
+
+## Movies By Genre
+
+```cypher
+MATCH (m:Movie)-[:BELONGS_TO]->(g:Genre)
+RETURN m,g;
+```
+
+---
+
+# REST APIs
+
+## Get All Movies
 
 ```
-/recommend/Aravind
+GET /movies
+```
+
+---
+
+## Get Movie By ID
+
+```
+GET /movies/<id>
+```
+
+---
+
+## Search Movie
+
+```
+GET /search?title=MovieName
 ```
 
 ---
 
 ## Add Movie
 
-POST
-
 ```
-/add-movie
+POST /add-movie
 ```
 
 ---
 
 ## Update Movie
 
-POST
-
 ```
-/edit-movie/<id>
+POST /edit-movie/<id>
 ```
 
 ---
 
 ## Delete Movie
 
-GET
+```
+GET /delete-movie/<id>
+```
+
+---
+
+## Recommendation
 
 ```
-/delete-movie/<id>
+GET /recommend/Aravind
 ```
 
 ---
 
 # Installation
 
-Clone the project
+Clone the repository
 
-```
-git clone YOUR_REPOSITORY_URL
+```bash
+git clone https://github.com/Diyash-18/MovieRecommendationSystem.git
 ```
 
-Create Virtual Environment
+Move into the project folder
 
+```bash
+cd MovieRecommendationSystem
 ```
+
+Create a virtual environment
+
+```bash
 python -m venv venv
 ```
 
-Activate
+Activate virtual environment
 
 Windows
 
-```
+```bash
 venv\Scripts\activate
 ```
 
-Install Dependencies
+Install dependencies
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
-Run Seeder
+Seed the database
 
-```
+```bash
 python seed.py
 ```
 
-Run Application
+Run the application
 
-```
+```bash
 python app.py
 ```
 
-Open
+Open in browser
 
 ```
 http://127.0.0.1:5000
@@ -212,40 +339,56 @@ http://127.0.0.1:5000
 
 Database Connection
 
-```
+```bash
 python tests/test_connection.py
 ```
 
 Verify Database
 
-```
+```bash
 python tests/verify_db.py
 ```
 
 Recommendation Test
 
-```
+```bash
 python tests/test_recommendation.py
 ```
 
 ---
 
-# Future Enhancements
+# Project Features
 
-- Authentication
-- User Login
-- Movie Posters API
-- Collaborative Filtering
-- Machine Learning Recommendations
-- Admin Dashboard
+- Graph Database Implementation
+- Movie CRUD Operations
+- Search Functionality
+- Recommendation Engine
+- Multi-Hop Graph Traversal
+- Parameterized Cypher Queries
+- Responsive Bootstrap UI
+- REST API Integration
+- Modular Flask Architecture
 
 ---
 
-# Developed by
+# Future Enhancements
 
+- User Authentication
+- Login & Registration
+- Movie Posters API
+- User Ratings
+- Watchlist Feature
+- AI-Based Recommendations
+- Admin Dashboard
+- Collaborative Filtering
+- Movie Reviews
 
-DIYA
+---
+
+# Developed By
+
+**DIYA**
 
 Movie Recommendation System
 
-CognoDB Assignment 2026
+Developed using **Python**, **Flask**, and **CognoDB** as part of the CognoDB Assignment.
