@@ -385,6 +385,11 @@ python tests/test_recommendation.py
 
 ---
 
+
+## Live Demo
+
+https://movie-recommendation-system-ifn3.onrender.com
+
 # Developed By
 
 **DIYA**
