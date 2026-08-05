@@ -1,0 +1,69 @@
+/* ==========================================
+   Hero Section
+========================================== */
+
+.container-fluid.bg-dark{
+    background: linear-gradient(135deg,#0d6efd,#212529);
+}
+
+/* ==========================================
+   Buttons
+========================================== */
+
+.btn{
+    transition:.3s;
+}
+
+.btn:hover{
+    transform:translateY(-3px);
+}
+
+/* ==========================================
+   Cards
+========================================== */
+
+.card{
+    transition:.4s;
+}
+
+.card:hover{
+    transform:translateY(-6px);
+}
+
+/* ==========================================
+   Footer
+========================================== */
+
+footer{
+
+    margin-top:80px;
+
+    background:#212529;
+
+    color:white;
+
+    text-align:center;
+
+    padding:25px;
+
+}
+
+/* ==========================================
+   Responsive
+========================================== */
+
+@media(max-width:768px){
+
+    h1{
+
+        font-size:30px;
+
+    }
+
+    .display-4{
+
+        font-size:35px;
+
+    }
+
+}

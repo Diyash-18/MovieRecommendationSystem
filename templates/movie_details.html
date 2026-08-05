@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg border-0">
+
+        <div class="row">
+
+            <!-- Movie Image -->
+
+            <div class="col-md-4 text-center p-4">
+
+                <img
+                    src="{{ url_for('static', filename='images/movie.png') }}"
+                    class="img-fluid rounded"
+                    style="max-height:400px;"
+                    alt="Movie Image">
+
+            </div>
+
+            <!-- Movie Details -->
+
+            <div class="col-md-8">
+
+                <div class="card-body">
+
+                    <h1 class="fw-bold mb-3">
+                        🎬 {{ movie.title }}
+                    </h1>
+
+                    <hr>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <div class="card bg-light">
+
+                                <div class="card-body text-center">
+
+                                    <h5>📅 Release Year</h5>
+
+                                    <h3>{{ movie.year }}</h3>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <div class="card bg-light">
+
+                                <div class="card-body text-center">
+
+                                    <h5>⭐ Rating</h5>
+
+                                    <h3>{{ movie.rating }}/10</h3>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <div class="card bg-light">
+
+                                <div class="card-body text-center">
+
+                                    <h5>⏰ Duration</h5>
+
+                                    <h3>{{ movie.duration }} mins</h3>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <div class="card bg-light">
+
+                                <div class="card-body text-center">
+
+                                    <h5>🆔 Movie ID</h5>
+
+                                    <h3>{{ movie.id }}</h3>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <h5 class="mb-3">
+
+                        Rating
+
+                    </h5>
+
+                   <div class="progress mb-4" style="height:30px;">
+
+                        <div
+                            class="progress-bar bg-success"
+                            role="progressbar"
+                            style="width:90%;">
+
+                            {{ movie.rating }}/10
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-4">
+
+                        <a
+                            href="/movies-page"
+                            class="btn btn-secondary">
+
+                            ⬅ Back
+
+                        </a>
+
+                        <a
+                            href="/edit-movie-page/{{ movie.id }}"
+                            class="btn btn-warning">
+
+                            ✏ Edit
+
+                        </a>
+
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            onclick="confirmDelete('{{ movie.id }}')">
+
+                            🗑 Delete
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

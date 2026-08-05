@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <!-- Heading -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-6">
+
+            <h2>
+                🎬 All Movies
+            </h2>
+
+        </div>
+
+        <div class="col-md-6 text-end">
+
+            <a href="/add-movie-page"
+               class="btn btn-success">
+
+                ➕ Add Movie
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Search Bar -->
+
+    <form action="/search" method="GET">
+
+        <div class="input-group mb-5">
+
+            <input
+                type="text"
+                name="title"
+                class="form-control"
+                placeholder="Search movie...">
+
+            <button
+                class="btn btn-primary">
+
+                🔍 Search
+
+            </button>
+
+        </div>
+
+    </form>
+
+    <!-- Movie Cards -->
+
+    <div class="row">
+
+        {% for movie in movies %}
+
+        <div class="col-lg-4 col-md-6 mb-4">
+
+            <div class="card shadow movie-card h-100">
+
+                <img
+                    src="{{ url_for('static', filename='images/movie.png') }}"
+                    class="card-img-top p-4"
+                    style="height:250px; object-fit:contain;">
+
+                <div class="card-body">
+
+                    <h4 class="card-title">
+
+                        {{ movie.title }}
+
+                    </h4>
+
+                    <hr>
+
+                    <p>
+
+                        📅 <strong>Year :</strong>
+
+                        {{ movie.year }}
+
+                    </p>
+
+                    <p>
+
+                        ⭐ <strong>Rating :</strong>
+
+                        {{ movie.rating }}/10
+
+                    </p>
+
+                    <p>
+
+                        ⏰ <strong>Duration :</strong>
+
+                        {{ movie.duration }} mins
+
+                    </p>
+
+                </div>
+
+                <div class="card-footer bg-white">
+
+                    <div class="d-grid gap-2">
+
+                        <a
+                           href="/movie-page/{{ movie.id }}"
+                           class="btn btn-primary">
+
+                            View Details
+
+                        </a>
+
+                        <a
+                           href="/edit-movie-page/{{ movie.id }}"
+                           class="btn btn-warning">
+
+                            Edit
+
+                        </a>
+
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            onclick="confirmDelete('{{ movie.id }}')">
+
+                            Delete
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
